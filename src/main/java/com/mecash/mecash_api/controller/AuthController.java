@@ -2,13 +2,17 @@ package com.mecash.mecash_api.controller;
 
 import com.mecash.mecash_api.dto.auth.LoginRequest;
 import com.mecash.mecash_api.dto.auth.LoginResponse;
+import com.mecash.mecash_api.dto.auth.MeResponse;
 import com.mecash.mecash_api.dto.auth.SignupRequest;
 import com.mecash.mecash_api.dto.auth.SignupResponse;
+import com.mecash.mecash_api.security.AuthPrincipal;
 import com.mecash.mecash_api.service.AuthService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,19 +22,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@SecurityRequirements
 public class AuthController {
 
     private final AuthService authService;
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirements
     public SignupResponse signup(@Valid @RequestBody SignupRequest request) {
         return authService.signup(request);
     }
 
     @PostMapping("/login")
+    @SecurityRequirements
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @GetMapping("/me")
+    public MeResponse me(@AuthenticationPrincipal AuthPrincipal principal) {
+        return authService.getMe(principal);
     }
 }

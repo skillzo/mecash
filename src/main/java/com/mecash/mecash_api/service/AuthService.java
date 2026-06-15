@@ -8,12 +8,15 @@ import com.mecash.mecash_api.domain.repository.UserRepository;
 import com.mecash.mecash_api.dto.auth.AccountResponse;
 import com.mecash.mecash_api.dto.auth.LoginRequest;
 import com.mecash.mecash_api.dto.auth.LoginResponse;
+import com.mecash.mecash_api.dto.auth.MeResponse;
 import com.mecash.mecash_api.dto.auth.SignupRequest;
 import com.mecash.mecash_api.dto.auth.SignupResponse;
 import com.mecash.mecash_api.dto.auth.UserResponse;
 import com.mecash.mecash_api.exception.DuplicateEmailException;
 import com.mecash.mecash_api.exception.DuplicateUsernameException;
 import com.mecash.mecash_api.exception.InvalidCredentialsException;
+import com.mecash.mecash_api.exception.UserNotFoundException;
+import com.mecash.mecash_api.security.AuthPrincipal;
 import com.mecash.mecash_api.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -72,7 +75,17 @@ public class AuthService {
                 .orElseThrow(InvalidCredentialsException::new);
 
         String token = jwtService.generateToken(user.getId(), account.getAccountNumber());
-        return new LoginResponse(token);
+        return new LoginResponse(token, new UserResponse(user));
+    }
+
+    public MeResponse getMe(AuthPrincipal principal) {
+        User user = userRepository.findById(principal.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(principal.getUserId()));
+
+        Account account = accountRepository.findByUserId(principal.getUserId())
+                .orElseThrow(InvalidCredentialsException::new);
+
+        return new MeResponse(new UserResponse(user), new AccountResponse(account));
     }
 
     private String generateUniqueAccountNumber() {
