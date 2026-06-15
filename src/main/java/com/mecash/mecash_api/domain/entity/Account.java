@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 
 @Entity
 @Table(name = "accounts")
@@ -30,6 +29,9 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 10)
+    private String accountNumber;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -40,10 +42,4 @@ public class Account {
 
     @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal balance = BigDecimal.ZERO;
-
-    @Column(nullable = false)
-    private Instant createdAt = Instant.now();
 }
-
-
-

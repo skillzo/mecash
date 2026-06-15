@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    List<Transaction> findByFromAccountOrToAccountOrderByCreatedAtDesc(Account fromAccount, Account toAccount);
+    List<Transaction> findByFromAccountOrToAccountOrderByTimestampDesc(Account fromAccount, Account toAccount);
 }

@@ -40,16 +40,26 @@ public class Transaction {
     private Account toAccount;
 
     @Column(nullable = false, precision = 19, scale = 4)
-    private BigDecimal amount;
+    private BigDecimal amountSent;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Currency currency;
+    private Currency currencySent;
+
+    @Column(nullable = false, precision = 19, scale = 4)
+    private BigDecimal amountReceived;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Currency currencyReceived;
+
+    @Column(nullable = false, precision = 19, scale = 8)
+    private BigDecimal exchangeRateUsed;
+
+    @Column(nullable = false)
+    private Instant timestamp = Instant.now();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TransactionStatus status = TransactionStatus.PENDING;
-
-    @Column(nullable = false)
-    private Instant createdAt = Instant.now();
 }

@@ -26,8 +26,11 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false, unique = true)
+    private String username;
+
     @Column(nullable = false)
-    private String name;
+    private String password;
 
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
